@@ -37,7 +37,7 @@ export function River({ river, label, opponent, hoverTile, onHoverTile, doraTile
               glowing={isDoraOrAka(record.tile, doraTiles)}
               highlighted={hoverTile != null && sameTileKind(hoverTile, record.tile)}
             />
-            {index === river.length - 1 && <span className="river-last-mark">最新</span>}
+            {index === river.length - 1 && <span className="river-last-mark">▲</span>}
           </span>
         ))}
       </div>

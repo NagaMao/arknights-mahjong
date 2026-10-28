@@ -146,6 +146,22 @@ export function Table({
   const riichiCandidates = humanTurn
     ? legalDiscards.filter((tile) => canDeclareRiichi(state, 0, tile))
     : [];
+  const hasHandActions =
+    reaction !== null ||
+    riichiMode ||
+    (humanTurn &&
+      (tsumo !== null ||
+        riichiCandidates.length > 0 ||
+        ankanOptions.length > 0 ||
+        kakanOptions.length > 0 ||
+        nineReady));
+  const aiRiverRows = Math.ceil(ai.river.length / 20);
+  const humanRiverRows = Math.ceil(human.river.length / 20);
+  const riverRows = aiRiverRows + humanRiverRows;
+  const heavyRivers =
+    Math.max(aiRiverRows, humanRiverRows) >= 4 ||
+    riverRows > 4 ||
+    (Math.max(aiRiverRows, humanRiverRows) >= 3 && hasHandActions);
   const tenpai = getPlayerTenpai(state, 0);
   const dora = getRevealedDora(state);
   const [hoverTile, setHoverTile] = useState<TileType | null>(null);
@@ -215,7 +231,7 @@ export function Table({
       </header>
 
       <main className="table-layout">
-        <section className="table-surface">
+        <section className={`table-surface ${heavyRivers ? 'table-surface--heavy-rivers' : ''}`}>
           <div className="table-scanline" aria-hidden="true" />
           <div className="opponent-zone">
             <section className="match-info-panel" aria-label="对局信息">
@@ -280,10 +296,10 @@ export function Table({
 
           <div className="player-zone">
             <div className="player-meta-row">
-              <div className="player-title">
+              <div className="player-title" title={statusText}>
                 <span className="micro-label">YOUR HAND // {human.operator.toUpperCase()}</span>
-                <div className="player-title-line">
-                  <strong>{humanTurn ? '轮到你行动' : '等待对家'}</strong>
+                <div className="player-status-inline">
+                  <strong>{humanTurn ? '轮到你行动' : reaction ? '可以响应' : '等待对家'}</strong>
                   <StatusChips state={state} />
                 </div>
               </div>
@@ -316,18 +332,9 @@ export function Table({
 
             <div className="player-main">
               <div className="hand-cluster">
-                <div className={`hand-action-row ${reaction ? 'is-reaction' : ''}`}>
-                  <div className="command-status">
-                    <span className={`status-light ${humanTurn ? 'is-live' : ''} ${reaction ? 'is-alert' : ''}`} />
-                    <div>
-                      <span className="micro-label">
-                        {reaction ? 'REACTION WINDOW' : humanTurn ? 'YOUR TURN' : 'STANDBY'}
-                      </span>
-                      <strong>{statusText}</strong>
-                    </div>
-                  </div>
-
-                  <div className="hand-actions">
+                {hasHandActions && (
+                  <div className={`hand-action-row ${reaction ? 'is-reaction' : ''}`}>
+                    <div className="hand-actions">
                     {reaction ? (
                       <>
                         {reaction.canRon && (
@@ -407,6 +414,7 @@ export function Table({
                     )}
                   </div>
                 </div>
+                )}
 
                 <Hand
                   player={human}

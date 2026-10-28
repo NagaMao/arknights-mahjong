@@ -5410,3 +5410,81 @@ html.in-game {
     flex-direction: column;
   }
 }
+
+/* =========================================================
+   ROUND 8: compact hand header; tall river fallback
+   ========================================================= */
+
+.player-zone {
+  padding: 2px 16px 6px;
+}
+
+.player-title {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.player-status-inline {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  min-width: 0;
+}
+
+.player-status-inline > strong {
+  font-family: "Noto Serif SC", "Songti SC", serif;
+  font-size: 0.86rem;
+  line-height: 1.15;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.player-status-inline .status-chips {
+  gap: 3px;
+}
+
+.player-status-inline .chip {
+  font-size: 0.48rem;
+  padding: 1px 4px;
+}
+
+.hand-action-row {
+  min-height: 40px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+.hand-action-row .hand-actions {
+  margin-left: auto;
+}
+
+@media (min-width: 1021px) {
+  .center-grid--rivers {
+    gap: 5px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+
+  .center-grid--rivers .river-grid {
+    padding-top: 5px;
+  }
+}
+
+/* If both rivers become extremely long, let the table grow and the page scroll
+   instead of letting the lower river overlap the hand area. */
+.game-screen:has(.table-surface--heavy-rivers) {
+  height: auto;
+  min-height: 100vh;
+  overflow-y: auto;
+}
+
+.table-surface--heavy-rivers {
+  min-height: calc(100vh - 88px);
+}
+
+.table-surface--heavy-rivers .center-grid--rivers {
+  flex: 0 0 auto;
+}

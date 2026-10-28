@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+﻿import { describe, expect, it } from 'vitest';
 import {
   canDeclareRiichi,
   callChi,
@@ -14,7 +14,7 @@ import {
   startNextHand,
   canDeclareNineTerminals,
 } from '../game/state';
-import { activateSkill, validateSkillActivation } from '../game/skills';
+import { activateSkill, spCapFor, validateSkillActivation } from '../game/skills';
 import { getWinningTiles, isTenpai } from '../game/rules';
 import type { GameState, Meld, PlayerIndex, Tile } from '../game/types';
 
@@ -74,9 +74,9 @@ describe('对局状态机与立直', () => {
 
   it('SP 不会超过主动技能消耗上限', () => {
     const state = rig(startGame({ seed: 12, playerOperator: 'amiya' }), 0, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 27], 27);
-    state.players[0].sp = 10;
+    state.players[0].sp = spCapFor('amiya');
     const next = discardTile(state, 0, 27);
-    expect(next.players[0].sp).toBe(10);
+    expect(next.players[0].sp).toBe(spCapFor('amiya'));
   });
 
   it('立直支付 1000 点、供托 +1，且立直后只能摸切', () => {
@@ -128,7 +128,7 @@ describe('干员技能', () => {
     );
     const target = t(2, 5);
     state.wall = [t(0, 0), target, ...state.wall.filter((tile) => tile !== target && tile !== t(2, 8))];
-    state.players[0].sp = 10;
+    state.players[0].sp = spCapFor('amiya');
     state.players[0].skillUsed = false;
     const validation = validateSkillActivation(state, 0, { tile: target });
     expect(validation.ok).toBe(true);
@@ -160,7 +160,7 @@ describe('干员技能', () => {
       t(2, 8),
     );
     state.players[0].riichi = true;
-    state.players[0].sp = 10;
+    state.players[0].sp = spCapFor('amiya');
     state.wall = [t(2, 5), ...state.wall];
     expect(validateSkillActivation(state, 0, { tile: t(2, 5) }).ok).toBe(false);
   });
@@ -172,7 +172,7 @@ describe('干员技能', () => {
       [...tenpaiThirteen, t(2, 8)],
       t(2, 8),
     );
-    state.players[0].sp = 10;
+    state.players[0].sp = spCapFor('amiya');
     state.wall = state.wall.filter((tile) => tile !== 5);
     expect(validateSkillActivation(state, 0, { tile: 5 }).ok).toBe(false);
   });
@@ -184,7 +184,7 @@ describe('干员技能', () => {
       [...tenpaiThirteen, t(2, 8)],
       t(2, 8),
     );
-    state.players[0].sp = 4;
+    state.players[0].sp = spCapFor('hoshiguma');
     state = activateSkill(state, 0);
     expect(state.players[0].sp).toBe(0);
     expect(state.players[0].skillUsed).toBe(true);
@@ -199,7 +199,7 @@ describe('干员技能', () => {
       [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 27],
       27,
     );
-    state.players[0].sp = 4;
+    state.players[0].sp = spCapFor('hoshiguma');
     state = activateSkill(state, 0);
     state.players[0].hand = sorted([0, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
     state.players[1].hand = sorted([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0]);
@@ -392,3 +392,4 @@ describe('规则辅助', () => {
     expect(hand.length + melds.length * 3).toBe(14);
   });
 });
+
