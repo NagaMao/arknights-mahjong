@@ -6,13 +6,15 @@
 
 ## 界面预览
 
-![开始界面](docs/preview-start.png)
+![开始界面](<img width="1919" height="926" alt="QQ_1793203040663" src="https://github.com/user-attachments/assets/499d650a-aa92-4a5e-990a-9866b534c162" />
+)
 
-![牌桌界面](docs/preview-game.png)
+![牌桌界面](<img width="1917" height="926" alt="QQ_1793203010463" src="https://github.com/user-attachments/assets/cfeebcfc-b233-4f63-b811-dd338813e397" />
+)
 
 ![立直宣言牌与听牌预览](docs/preview-riichi.png)
 
-![和牌牌型、宝牌与右侧结算面板]<img width="1919" height="926" alt="QQ_1793202942572" src="https://github.com/user-attachments/assets/aa68160b-c1d6-4758-8a97-46530547a6dc" />
+![和牌牌型、宝牌与右侧结算面板](<img width="1919" height="926" alt="QQ_1793202942572" src="https://github.com/user-attachments/assets/aa68160b-c1d6-4758-8a97-46530547a6dc" />)
 
 
 ![移动端](docs/preview-mobile.png)
