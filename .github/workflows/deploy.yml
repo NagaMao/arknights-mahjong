@@ -29,5 +29,16 @@ jobs:
           ossutil
 
       - name: Upload to OSS
+        env:
+          OSS_ACCESS_KEY_ID: ${{ secrets.OSS_ACCESS_KEY_ID }}
+          OSS_ACCESS_KEY_SECRET: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
+          OSS_ENDPOINT: oss-cn-hongkong.aliyuncs.com
         run: |
-          ossutil cp -r -f dist/ oss://ark-mj-hk/ --exclude "*.map" -e oss-cn-hongkong.aliyuncs.com -i ${{ secrets.OSS_ACCESS_KEY_ID }} -k ${{ secrets.OSS_ACCESS_KEY_SECRET }}
+          # 先做一次安全校验，确认密钥确实被传入（不会打印密钥明文）
+          if [ -z "$OSS_ACCESS_KEY_ID" ] || [ -z "$OSS_ACCESS_KEY_SECRET" ]; then
+            echo "ERROR: OSS_ACCESS_KEY_ID or OSS_ACCESS_KEY_SECRET is empty. Please check GitHub Secrets."
+            exit 1
+          fi
+          
+          # 使用环境变量执行上传
+          ossutil cp -r -f dist/ oss://ark-mj-hk/ --exclude "*.map" -e "$OSS_ENDPOINT" -i "$OSS_ACCESS_KEY_ID" -k "$OSS_ACCESS_KEY_SECRET"
