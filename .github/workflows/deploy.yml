@@ -1,0 +1,33 @@
+name: Deploy to OSS
+
+on:
+  push:
+    branches: [main, master]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - name: Install ossutil
+        run: |
+          curl -o ossutil64 https://gosspublic.alicdn.com/ossutil/1.7.18/ossutil-v1.7.18-linux-amd64/ossutil64
+          chmod +x ossutil64
+          ./ossutil64 config -e oss-cn-hongkong.aliyuncs.com -i ${{ secrets.OSS_ACCESS_KEY_ID }} -k ${{ secrets.OSS_ACCESS_KEY_SECRET }} -L CH
+
+      - name: Upload to OSS
+        run: |
+          ./ossutil64 cp -r -f dist/ oss://ark-mj-hk/ --exclude "*.map"
