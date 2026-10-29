@@ -1,4 +1,4 @@
-﻿import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import {
   canDeclareRiichi,
   callChi,
@@ -210,6 +210,18 @@ describe('干员技能', () => {
     state.reaction = null;
     const after = discardTile(state, 1, 0);
     expect(after.reaction).toBeNull();
+  });
+
+  it('星熊立直后不能发动力之锯', () => {
+    const state = rig(
+      startGame({ seed: 34, playerOperator: 'hoshiguma' }),
+      0,
+      [...tenpaiThirteen, t(2, 8)],
+      t(2, 8),
+    );
+    state.players[0].sp = spCapFor('hoshiguma');
+    state.players[0].riichi = true;
+    expect(validateSkillActivation(state, 0).ok).toBe(false);
   });
 
   it('星熊减番在役满之外生效', () => {

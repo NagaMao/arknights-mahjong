@@ -184,6 +184,18 @@ export function Table({
   const previewWaits = previewCandidate
     ? getWaitsAfterDiscard(state, 0, previewCandidate)
     : null;
+  const isOpenHand = human.melds.some((meld) => meld.type !== 'ankan');
+  const openWaitPreview =
+    humanTurn &&
+    !human.riichi &&
+    isOpenHand &&
+    hoveredHandTile !== null &&
+    legalDiscards.includes(hoveredHandTile)
+      ? (() => {
+          const waits = getWaitsAfterDiscard(state, 0, hoveredHandTile);
+          return waits.length > 0 ? { tile: hoveredHandTile, waits } : null;
+        })()
+      : null;
 
   const statusText = (() => {
     if (riichiMode) {
@@ -332,6 +344,16 @@ export function Table({
 
             <div className="player-main">
               <div className="hand-cluster">
+                {openWaitPreview && (
+                  <div className="open-wait-bubble">
+                    <span className="open-wait-label">打「{tileName(openWaitPreview.tile)}」听</span>
+                    <span className="open-wait-tiles">
+                      {openWaitPreview.waits.map((tile, index) => (
+                        <Tile key={`${tile}-${index}`} tile={tile} mini />
+                      ))}
+                    </span>
+                  </div>
+                )}
                 {hasHandActions && (
                   <div className={`hand-action-row ${reaction ? 'is-reaction' : ''}`}>
                     <div className="hand-actions">
@@ -403,6 +425,15 @@ export function Table({
                         {kakanOptions.length > 0 && (
                           <button type="button" className="action-btn" onClick={onKakan}>
                             加杠
+                          </button>
+                        )}
+                        {human.riichi && state.drawnTile !== null && ankanOptions.length > 0 && !tsumo && (
+                          <button
+                            type="button"
+                            className="action-btn action-btn--muted"
+                            onClick={() => onDoubleDiscard(state.drawnTile as TileType)}
+                          >
+                            摸切
                           </button>
                         )}
                         {nineReady && (

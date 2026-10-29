@@ -5488,3 +5488,97 @@ html.in-game {
 .table-surface--heavy-rivers .center-grid--rivers {
   flex: 0 0 auto;
 }
+
+/* =========================================================
+   ROUND 12: riichi auto-discard, win CTA, open-hand wait bubble
+   ========================================================= */
+
+.hand-cluster {
+  position: relative;
+}
+
+.open-wait-bubble {
+  position: absolute;
+  z-index: 40;
+  left: 10px;
+  bottom: calc(100% + 7px);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-width: min(640px, calc(100vw - 40px));
+  padding: 6px 9px;
+  border: 1px solid rgba(244, 189, 107, 0.62);
+  background: #121a1e;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.5), 0 0 14px rgba(244, 189, 107, 0.1);
+  pointer-events: none;
+}
+
+.open-wait-bubble::after {
+  content: "";
+  position: absolute;
+  left: 22px;
+  bottom: -5px;
+  width: 8px;
+  height: 8px;
+  border-right: 1px solid rgba(244, 189, 107, 0.62);
+  border-bottom: 1px solid rgba(244, 189, 107, 0.62);
+  background: #121a1e;
+  transform: rotate(45deg);
+}
+
+.open-wait-label {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  color: var(--gold-2);
+  white-space: nowrap;
+}
+
+.open-wait-tiles {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+}
+
+.open-wait-tiles .tile {
+  --tile-w: 26px;
+}
+
+.action-btn--win {
+  min-width: 112px;
+  min-height: 50px;
+  padding: 9px 20px;
+  font-size: 1.02rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  animation: win-button-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes win-button-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 rgba(244, 189, 107, 0.2), 0 0 8px rgba(244, 189, 107, 0.35);
+    filter: brightness(1);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(244, 189, 107, 0.12), 0 0 22px rgba(244, 189, 107, 0.75);
+    filter: brightness(1.18);
+  }
+}
+
+@media (max-width: 720px) {
+  .open-wait-bubble {
+    left: 4px;
+    max-width: calc(100vw - 20px);
+  }
+
+  .open-wait-tiles .tile {
+    --tile-w: 22px;
+  }
+
+  .action-btn--win {
+    min-width: 100px;
+    min-height: 46px;
+    font-size: 0.95rem;
+  }
+}

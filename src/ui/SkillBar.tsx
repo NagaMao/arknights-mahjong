@@ -24,8 +24,8 @@ export function SkillBar({ state, player, onUseSkill, compact }: SkillBarProps) 
   const canPress = baseReady && (p.operator === 'amiya' ? !p.riichi : validation.ok);
   const reason = p.skillUsed
     ? '本局主动技能已使用'
-    : p.operator === 'amiya' && p.riichi
-      ? '立直中不能发动奇美拉'
+    : p.riichi
+      ? `立直中不能发动${info.activeName}`
       : baseReady
         ? p.operator === 'amiya'
           ? '选择要检索的牌'

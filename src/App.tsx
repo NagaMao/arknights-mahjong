@@ -15,6 +15,7 @@ import {
   getKakanOptions,
   getLegalDiscards,
   getReactionOptions,
+  getTsumoResult,
   startGame,
   startNextHand,
   passReaction,
@@ -97,7 +98,7 @@ export default function App() {
     !human.skillUsed &&
     human.sp >= OPERATORS[human.operator].spCost &&
     human.amiyaLock === 0 &&
-    !(human.operator === 'amiya' && human.riichi);
+    !human.riichi;
 
   const humanTurn = !!game && game.phase === 'discard' && game.turn === 0;
   const legalDiscards = useMemo(() => {
@@ -198,6 +199,30 @@ export default function App() {
       }, 80);
     }
   };
+
+  // 立直后摸牌默认自动摸切；只有自摸、暗杠等需要玩家确认的情况才暂停。
+  useEffect(() => {
+    if (!game || screen !== 'game') return;
+    if (game.phase !== 'discard' || game.turn !== 0 || game.drawnTile === null) return;
+    const p = game.players[0];
+    if (!p.riichi) return;
+    if (getTsumoResult(game) !== null) return;
+    if (getAnkanOptions(game, 0).length > 0) return;
+    const tile = game.drawnTile;
+    const timer = window.setTimeout(() => {
+      apply((state) => {
+        if (state.phase !== 'discard' || state.turn !== 0 || state.drawnTile !== tile) {
+          return state;
+        }
+        const current = state.players[0];
+        if (!current.riichi) return state;
+        if (getTsumoResult(state) !== null) return state;
+        if (getAnkanOptions(state, 0).length > 0) return state;
+        return discardTile(state, 0, tile);
+      });
+    }, 520);
+    return () => window.clearTimeout(timer);
+  }, [game, screen]);
 
   const handleStart = (operator: OperatorId, seed: number) => {
     unlockAudio();
@@ -537,3 +562,4 @@ export default function App() {
     </>
   );
 }
+

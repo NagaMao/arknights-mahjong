@@ -1,4 +1,4 @@
-﻿/**
+/**
  * 干员技能系统。
  * 每名干员 1 个被动 + 1 个主动；SP 上限等于主动消耗，跨局保留。
  */
@@ -49,7 +49,7 @@ export const OPERATORS: Record<OperatorId, OperatorInfo> = {
     passiveDescription: '自身支付点数时，和牌者需额外将支付额 10% 交入场供。',
     activeName: '力之锯',
     activeDescription:
-      '本局对手和牌番数 -1（最低 1 番，役满不受影响）。使用后本局不可鸣牌。每局限一次。',
+      '本局对手和牌番数 -1（最低 1 番，役满不受影响）。使用后本局不可鸣牌；立直后不可发动。每局限一次。',
     quote: '别怕，我挡在前面。',
   },
 };
@@ -87,6 +87,9 @@ export function validateSkillActivation(
   if (p.skillUsed) return { ok: false, reason: '本局主动技能已经使用过。' };
   if (p.operator === 'amiya' && p.riichi) {
     return { ok: false, reason: '立直中不能发动奇美拉。' };
+  }
+  if (p.operator === 'hoshiguma' && p.riichi) {
+    return { ok: false, reason: '立直中不能发动力之锯。' };
   }
   if (p.sp < OPERATORS[p.operator].spCost) {
     return { ok: false, reason: `SP 不足，需要 ${OPERATORS[p.operator].spCost} 点。` };
