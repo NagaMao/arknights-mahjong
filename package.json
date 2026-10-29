@@ -5,7 +5,9 @@
   "type": "module",
   "description": "明日方舟主题 2 人日本立直麻将网页单机版",
   "scripts": {
+    "predev": "node scripts/generate-asset-manifest.mjs",
     "dev": "vite",
+    "prebuild": "node scripts/generate-asset-manifest.mjs",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "typecheck": "tsc -b",

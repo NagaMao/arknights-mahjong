@@ -2,10 +2,10 @@
 
 《明日方舟》主题的 **2 人日本立直麻将网页单机版**。玩家扮演阿米娅或星熊，与另一位干员进行东风场、南风场半庄战。核心特色是每位干员 **1 个主动技能 + 1 个被动技能**，并带有一整套可复现的日麻规则引擎。
 
-> 同人练习作品，非商业用途。干员立绘与麻将牌面来自项目内素材目录，立绘已裁掉透明留白；后续可直接替换正式素材。
-> 麻将素材来源：https://github.com/liang7758520/mahjong-tiles/tree/main
-> 立绘素材来源：https://github.com/NagaMao/Arknights-PRTS-model
+> 本项目所有静态资源，版权均属于Arknights/上海鹰角网络科技有限公司，仅用于学习和交流
 
+- 麻将素材来源：https://github.com/liang7758520/mahjong-tiles/tree/main
+- 立绘素材来源：https://github.com/NagaMao/Arknights-PRTS-model
 ## 界面预览
 
 ![开始界面](docs/preview-start.png)
@@ -179,9 +179,35 @@ public/
   operators/      干员立绘
   tiles/flat/     扁平牌面
   tiles/horizontal/ 横置立直牌
+  sw.js           Service Worker 图片缓存
+  asset-manifest.json 自动生成的图片清单
+scripts/
+  generate-asset-manifest.mjs
 ```
 
 游戏逻辑与 React 完全解耦：`src/game` 不依赖 DOM/UI，所有操作均为纯函数式状态转换，并支持种子复现。
+
+---
+
+## 浏览器资源缓存
+
+牌面、横置牌和干员立绘通过 **Service Worker + Cache Storage** 缓存：
+
+- `public/sw.js` 注册为站点 Service Worker。
+- 首次打开时读取 `public/asset-manifest.json`，把全部牌面和立绘预缓存到浏览器。
+- 后续刷新优先从 Cache Storage 读取图片，不再重复下载。
+- 如果遇到未预缓存的图片，运行时也会自动写入缓存。
+- 新增干员或素材后，`npm run dev` / `npm run build` 会通过 `predev` / `prebuild` 自动重新生成 `asset-manifest.json`。
+- 替换**同名**图片时，需要把 `public/sw.js` 里的 `CACHE_VERSION` 从 `v1` 改成 `v2`，旧缓存会在新 Worker 激活时清除。
+- Service Worker 需要 HTTPS 或 `localhost` 环境；在 OSS/CDN 上请给 `sw.js` 和 `asset-manifest.json` 设置短缓存或 `no-cache`，图片本体可以长缓存。
+
+常用检查：
+
+```js
+// 浏览器 Console
+navigator.serviceWorker.ready.then(console.log)
+caches.keys().then(console.log)
+```
 
 ---
 

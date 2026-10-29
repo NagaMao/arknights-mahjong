@@ -173,7 +173,9 @@ export function StartScreen({ onStart, onHelp }: StartScreenProps) {
 
       <footer className="start-footer">
         <span>ARKNIGHTS FAN PROJECT · 非商业同人作品</span>
-        <span>立绘 / 牌面素材来自项目内 prts_models 与 mahjong_graphic</span>
+        <span>项目所有静态资源，版权均属于Arknights/上海鹰角网络科技有限公司，仅用于学习和交流</span>
+        <span>github开源项目地址：<a href='https://github.com/NagaMao/arknights-mahjong'>明日雀庄</a></span>
+        
         <span>v1.1.0</span>
       </footer>
     </div>
