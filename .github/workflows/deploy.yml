@@ -24,10 +24,19 @@ jobs:
 
       - name: Install ossutil
         run: |
-          curl -o ossutil64 https://gosspublic.alicdn.com/ossutil/1.7.18/ossutil-v1.7.18-linux-amd64/ossutil64
-          chmod +x ossutil64
-          ./ossutil64 config -e oss-cn-hongkong.aliyuncs.com -i ${{ secrets.OSS_ACCESS_KEY_ID }} -k ${{ secrets.OSS_ACCESS_KEY_SECRET }} -L CH
+          # 1. 下载官方安装脚本
+          curl -o install.sh https://gosspublic.alicdn.com/ossutil/install.sh
+          
+          # 2. 执行安装
+          sudo bash install.sh
+          
+          # 3. 验证安装
+          ossutil version
+          
+          # 4. 配置 ossutil (直接使用 ossutil 命令)
+          ossutil config -e oss-cn-hongkong.aliyuncs.com -i ${{ secrets.OSS_ACCESS_KEY_ID }} -k ${{ secrets.OSS_ACCESS_KEY_SECRET }} -L CH
 
       - name: Upload to OSS
         run: |
-          ./ossutil64 cp -r -f dist/ oss://ark-mj-hk/ --exclude "*.map"
+          # 注意这里使用的是 ossutil 而不是 ./ossutil64
+          ossutil cp -r -f dist/ oss://ark-mj-hk/ --exclude "*.map"
